@@ -15,9 +15,7 @@ from project.app.bl.CourseBLC import CourseBLC
 bp = Blueprint("course", __name__)
 
 
-bp.route("/associate_course", methods=["POST"])
-
-
+@bp.route("/associate_course", methods=["POST"])
 def addcourse():
     course = request.get_json()
     department_name = DepartmentSchema.load({"name": course.get("d_name")})
