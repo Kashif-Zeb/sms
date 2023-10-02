@@ -16,6 +16,6 @@ class Department(db.Model):
         secondary=foriegnkey.teacher_department,
         back_populates="department",
     )
-    courses = db.relationship(
+    course = db.relationship(
         "Course", secondary=foriegnkey.course_department, back_populates="department"
     )

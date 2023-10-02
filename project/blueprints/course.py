@@ -17,7 +17,15 @@ bp = Blueprint("course", __name__)
 
 @bp.route("/associate_course", methods=["POST"])
 def addcourse():
-    course = request.get_json()
-    department_name = DepartmentSchema.load({"name": course.get("d_name")})
-    course_name = CourseSchema.load({"name": course.get("c_name")})
-    CourseBLC.adding_course(department_name["name"], course_name["name"])
+    try:
+        course = request.get_json()
+        a = course.get("dname")
+        b = course.get("cname")
+        DS = DepartmentSchema()
+        CS = CourseSchema()
+        department_name = DS.load({"name": a})
+        course_name = CS.load({"name": b})
+        result = CourseBLC.adding_course(department_name["name"], course_name["name"])
+        return result
+    except Exception as e:
+        return jsonify({"Error": str(e)}), 422
