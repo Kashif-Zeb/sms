@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from project.app.db import db
 from project.blueprints.student import bp as student
 from project.blueprints.department import bp as department
+from project.blueprints.course import bp as course
 
 
 def create_app():
@@ -23,4 +24,5 @@ def create_app():
     #     db.create_all()
     app.register_blueprint(student)
     app.register_blueprint(department)
+    app.register_blueprint(course)
     return app

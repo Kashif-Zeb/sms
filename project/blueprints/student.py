@@ -5,6 +5,7 @@ from flask import Blueprint
 from project.app.models.student import Student
 from project.app.models.Department import Department
 from project.app.models.Teacher import Teacher
+from project.app.models.Course import Course
 from project.app.db import db
 from project.app.repositories.StudentRepository import StudentRepository
 from marshmallow import fields

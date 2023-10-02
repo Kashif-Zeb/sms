@@ -38,6 +38,18 @@ class foriegnkey:
             primary_key=True,
         ),
     )
+    course_department = db.Table(
+        "course_department",
+        db.Column(
+            "course_id", db.Integer, db.ForeignKey("course.id"), primary_key=True
+        ),
+        db.Column(
+            "department_id",
+            db.Integer,
+            db.ForeignKey("department.id"),
+            primary_key=True,
+        ),
+    )
 
 
 class Student(db.Model):
