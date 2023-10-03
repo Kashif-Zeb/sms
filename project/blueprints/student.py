@@ -51,6 +51,21 @@ def update_student(query_args, student_data):
         return jsonify({"Error": str(e)}), 422
 
 
+@bp.route("/update_student2", methods=["PUT"])
+@use_args({"id": fields.Integer()}, location="query")
+# @use_args(StudentSchema, location="json")
+def update_student2(args):
+    try:
+        student_id = args.get("id")
+        student_data = request.get_json()
+        StudentSchema().load(student_data)
+        StudentBLC.updating_student2(student_id, student_data)
+        # db.session.commit()
+        return jsonify({"message": f"student {student_id} is updated "}), 200
+    except Exception as e:
+        return jsonify({"Error": str(e)}), 422
+
+
 @bp.route("/get_student", methods=["GET"])
 def get_student():
     try:
@@ -88,3 +103,11 @@ def delete_student(args):
         return jsonify({"message": f"student {args} deleted successfully"})
     except Exception as e:
         return jsonify({"Error": str(e)}), 422
+
+
+@bp.route("/Search", methods=["GET"])
+@use_args({"se": fields.String()}, location="query")
+def search(args):
+    # se = request.get_json("search")
+    result = StudentBLC.searching(**args)
+    return jsonify({"searched": result})

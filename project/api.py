@@ -3,11 +3,19 @@ from project.app.db import db
 from project.blueprints.student import bp as student
 from project.blueprints.department import bp as department
 from project.blueprints.course import bp as course
+from project import config
+import os
 
 
 def create_app():
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///testing.db"
+    # app.config[
+    #     "SQLALCHEMY_DATABASE_URI"
+    # ] = f"mysql+pymysql://{config.DB_USER}:{config.DB_PWD}@{config.DB_URL}:{config.DB_PORT}/{config.DB_NAME}"
+    # app.config[
+    #     "SQLALCHEMY_DATABASE_URI"
+    # ] = "mysql+pymysql://root:kashif@localhost:3306/sms"
 
     db.init_app(app)
 
