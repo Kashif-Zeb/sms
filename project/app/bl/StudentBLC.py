@@ -1,6 +1,10 @@
+from flask_jwt_extended import create_access_token
 from project.app.repositories.StudentRepository import StudentRepository
+from project.app.repositories.userrepository import UsersRepository
 from project.app.db import db
 from flask import request, jsonify
+from project.app.models.Users import Users
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class StudentBLC:
@@ -71,3 +75,29 @@ class StudentBLC:
         matching_names = [{"name": result[0]} for result in results]
         name_values = [item["name"] for item in matching_names]
         return name_values
+
+    @staticmethod
+    def registering(email, password):
+        session = StudentBLC.get_session()
+        if not email or not password:
+            return jsonify({"message": "Username and password are required"}), 400
+        if email:
+            UsersRepository.get_emal_user(session, email)
+            return jsonify({"message": "Username already exists"}), 400
+
+        # Store the hashed password in the database
+        hu = UsersRepository.add_user(password, email)
+        return jsonify({"message": "Registration successful"}), 201
+
+    @staticmethod
+    def loging(email, password):
+        session = StudentBLC.get_session()
+        if not email or not password:
+            return jsonify({"message": "Username and password are required"}), 400
+        user = UsersRepository.checking(session, email)
+        if user is not None and check_password_hash(user.passwords, password):
+            return jsonify({"message": "Invalid credentials"}), 401
+
+        # Create an access token
+        access_token = create_access_token(identity=email)
+        return jsonify({"access_token": f"Bearer {access_token}"}), 200

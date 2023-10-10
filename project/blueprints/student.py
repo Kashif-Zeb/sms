@@ -6,15 +6,52 @@ from project.app.models.student import Student
 from project.app.models.Department import Department
 from project.app.models.Teacher import Teacher
 from project.app.models.Course import Course
+from project.app.models.Users import Users
 from project.app.db import db
 from project.app.repositories.StudentRepository import StudentRepository
 from marshmallow import fields
 from project.app.bl.StudentBLC import StudentBLC
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    jwt_required,
+    get_jwt_identity,
+)
+from werkzeug.security import generate_password_hash, check_password_hash
 
 bp = Blueprint("student", __name__)
 
 
+@bp.route("/register", methods=["POST"])
+def register():
+    data = request.get_json()
+    email = data.get("email")
+    password = data.get("password")
+    res = StudentBLC.registering(email, password)
+    return res
+
+
+@bp.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    email = data.get("email")
+    password = data.get("password")
+    res = StudentBLC.loging(email, password)
+    return res
+
+
+@bp.route("/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    current_user = get_jwt_identity()
+    return (
+        jsonify({"message": f"Hello, {current_user}! This is a protected resource."}),
+        200,
+    )
+
+
 @bp.route("/add_student", methods=["POST"])
+@jwt_required()
 @use_args(StudentSchema, location="json")
 def add_student(args):
     # breakpoint()
@@ -28,8 +65,10 @@ def add_student(args):
 
 
 @bp.route("/get_single_student", methods=["GET"])
+@jwt_required()
 @use_args({"id": fields.Integer()}, location="query")
 def get_single_student(args):
+    current_user = get_jwt_identity()
     try:
         student = StudentBLC.get_student(**args)
         student_schema = StudentSchema()
