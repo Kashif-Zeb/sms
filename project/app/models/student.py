@@ -50,6 +50,18 @@ class foriegnkey:
             primary_key=True,
         ),
     )
+    student_designation = db.Table(
+        "student_designation",
+        db.Column(
+            "student_id", db.Integer, db.ForeignKey("student.id"), primary_key=True
+        ),
+        db.Column(
+            "designation_id",
+            db.Integer,
+            db.ForeignKey("designation.id"),
+            primary_key=True,
+        ),
+    )
 
 
 class Student(db.Model):
@@ -57,7 +69,7 @@ class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(25))
     address = db.Column(db.String(50))
-    email = db.Column(db.String(50), unique=True, nullable=False)
+    email = db.Column(db.String(50), unique=True)
     number = db.Column(db.String(50), unique=True, nullable=False)
     department = db.relationship(
         "Department",
@@ -68,5 +80,10 @@ class Student(db.Model):
     teacher = db.relationship(
         "Teacher",
         secondary=foriegnkey.student_teacher,
+        back_populates="student",
+    )
+    designation = db.relationship(
+        "Designation",
+        secondary=foriegnkey.student_designation,
         back_populates="student",
     )

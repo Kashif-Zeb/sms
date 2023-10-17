@@ -1,8 +1,10 @@
+from project.app.models.File import File
 from project.app.repositories.DepartmentRepository import DepartmentRepository
 from project.app.repositories.courseRepository import CourseRepository
 from project.app.db import db
-from flask import request, jsonify
+from flask import app, current_app, request, jsonify, send_from_directory
 from project.app.models.Department import Department
+import os
 
 
 class CourseBLC:
@@ -64,3 +66,28 @@ class CourseBLC:
                     return jsonify({"message": "department not found"}), 404
         else:
             return jsonify({"error": "Department name not provided in JSON data."})
+
+    @staticmethod
+    def uploading_file(filename, file_path):
+        CourseRepository.add_file_db(filename, file_path)
+        return jsonify({"file saved": filename}), 201
+        # Save the file information in the database
+        # db.session.add(File(filename=filename))
+        # db.session.commit()
+
+    @staticmethod
+    def downloading(filename):
+        session = CourseBLC.get_session()
+        # breakpoint()
+        if filename:
+            getname = CourseRepository.get_file(filename, session)
+            if getname:
+                absolute_upload_folder = os.path.abspath(
+                    current_app.config["UPLOAD_FOLDER"]
+                )
+                file_path = os.path.join(absolute_upload_folder, getname)
+
+                # print("Full File Path:", file_path)
+                # print(getname)
+                if os.path.exists(file_path):
+                    return file_path

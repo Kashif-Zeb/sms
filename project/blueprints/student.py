@@ -7,6 +7,7 @@ from project.app.models.Department import Department
 from project.app.models.Teacher import Teacher
 from project.app.models.Course import Course
 from project.app.models.Users import Users
+from project.app.models.Designation import Designation
 from project.app.db import db
 from project.app.repositories.StudentRepository import StudentRepository
 from marshmallow import fields
@@ -56,10 +57,11 @@ def protected():
 def add_student(args):
     # breakpoint()
     try:
-        student = Student(**args)
+        khan = StudentBLC.add_student_desig(args)
+        # student = Student(**args)
 
-        StudentRepository.add_student(student)
-        return jsonify({"message": f"student{student.name} add successfullly "})
+        # StudentRepository.add_student(student)
+        return jsonify({"message": f"student{args['name']} add successfullly "})
     except Exception as e:
         return ({"error": str(e)}), 422
 

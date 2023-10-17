@@ -22,6 +22,10 @@ def create_app():
     app.config[
         "JWT_SECRET_KEY"
     ] = "60b8b427938bc9f2fbe65d98640e831b4a8522f56150b97f141677d02570819b"
+    UPLOAD_FOLDER = "uploads"
+    app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
     jwt = JWTManager(app)
 
     @app.errorhandler(422)

@@ -5,15 +5,18 @@ from marshmallow import (
 )
 
 
+class Designation(Schema):
+    designation_id = fields.Int()
+    name = fields.Str()
+
+
 class StudentSchema(Schema):
     name = fields.String(
         validate=validate.Length(min=3, max=25),
         required=True,
         error_messages={"required": "Name field cannot be empty."},
     )
-    email = fields.Email(
-        required=True, error_messages={"required": "Email field cannot be empty."}
-    )
+    email = fields.Email(required=False)
     address = fields.String(
         required=True, error_messages={"required": "Address field cannot be empty."}
     )
@@ -22,3 +25,4 @@ class StudentSchema(Schema):
         required=True,
         error_messages={"required": "Number field cannot be empty."},
     )
+    designation = fields.Nested(Designation)

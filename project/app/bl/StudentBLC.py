@@ -13,6 +13,12 @@ class StudentBLC:
         return db.session
 
     @staticmethod
+    def add_student_desig(args):
+        # breakpoint()
+        res = StudentRepository.add_student(args)
+        return res
+
+    @staticmethod
     def get_student(id):
         session = StudentBLC.get_session()
         student = StudentRepository.get_student(id, session)

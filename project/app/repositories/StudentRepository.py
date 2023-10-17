@@ -2,15 +2,28 @@ from project.app.models.student import Student
 from project.app.models.Department import Department
 from project.app.models.Teacher import Teacher
 from project.app.models.Course import Course
+from project.app.models.Designation import Designation
 from project.app.db import db
 
 
 class StudentRepository:
     @staticmethod
-    def add_student(student):
+    def add_student(args):
+        student = Student(
+            name=args.get("name"),
+            address=args.get("address"),
+            email=args.get("email"),
+            number=args.get("number"),
+        )
+        res1 = Designation(
+            designation_id=args["designation"]["designation_id"],
+            name=args["designation"]["name"],
+        )
+        student.designation.append(res1)
         db.session.add(student)
+        db.session.add(res1)
         db.session.commit()
-        return student
+        # return res
 
     @staticmethod
     def get_student(id, session):
@@ -26,11 +39,11 @@ class StudentRepository:
         db.session.commit()
 
     def student_update_q2(student, student_data):
-        student.name = student_data["name"]
-        student.email = student_data["email"]
-        student.address = student_data["address"]
-        student.number = student_data["number"]
-        db.session.commit()
+        student.name = student_data.get("name")
+        student.email = student_data.get("email")
+        student.address = student_data.get("address")
+        student.number = student_data.get("number")
+        db.session.commit()  # added
 
     @staticmethod
     def get_all_student_q():
